@@ -37,6 +37,20 @@
 				<div data-container-for="LastName" class="k-edit-field">
                     <input name="LastName" data-bind="source: data, value: LastName" data-text-field="LastName" data-role="textbox" />
                 </div>
+
+                <div class="k-edit-label">
+                    <label for="Address">Address</label>
+                </div>
+				<div data-container-for="Address" class="k-edit-field">
+                    <input name="Address" data-bind="source: data, value: Address" data-text-field="Address" type="hidden" data-role="textbox" />
+                </div>
+
+                <div class="k-edit-label">
+                    <label for="SSN">SSN</label>
+                </div>
+				<div data-container-for="SSN" class="k-edit-field">
+                    <input name="SSN" data-bind="source: data, value: SSN" data-text-field="SSN" data-role="textbox" onkeyup="mask(this, mssn);" onblur="mask(this, mssn)" />
+                </div>
         </script>
 
         <script id="employeeIdTemplate" type="text/x-kendo-template">
@@ -85,6 +99,12 @@
                         }, {
                             field: "LastName",
                             title: "Last Name"
+                        }, {
+                            field: "Address",
+                            title: "Address"
+                        }, {
+                            field: "SSN",
+                            title: "SSN"
                         }
                     ],
                     editable: { mode: "popup", template: kendo.template($("#popupEditor").html()) },
