@@ -42,14 +42,14 @@
                     <label for="Address">Address</label>
                 </div>
 				<div data-container-for="Address" class="k-edit-field">
-                    <input name="Address" data-bind="source: data, value: Address" data-text-field="Address" type="hidden" data-role="textbox" />
+                    <input name="Address" data-bind="source: data, value: Address" data-text-field="Address" data-role="textbox" />
                 </div>
 
                 <div class="k-edit-label">
                     <label for="SSN">SSN</label>
                 </div>
 				<div data-container-for="SSN" class="k-edit-field">
-                    <input name="SSN" data-bind="source: data, value: SSN" data-text-field="SSN" data-role="textbox" onkeyup="mask(this, mssn);" onblur="mask(this, mssn)" />
+                    <input name="SSN" data-bind="source: data, value: SSN" data-text-field="SSN" data-role="textbox" onkeyup="mask(this, fssn);" onblur="mask(this, fssn)" />
                 </div>
         </script>
 
@@ -141,6 +141,33 @@
                         }
                     }
                 }
+            }
+
+            function mask(o, f) {
+                setTimeout(function () {
+                    var v = f(o.value);
+                    if (v != o.value) {
+                        o.value = v;
+                    }
+                }, 1);
+            }
+
+            function fssn(v) {
+                var r = v.replace(/\D/g,"");
+                if (r.length > 9) {
+                    r = r.replace(/^(\d\d\d)(\d{2})(\d{0,4}).*/,"$1-$2-$3");
+                    return r;
+                }
+                else if (r.length > 4) {
+                    r = r.replace(/^(\d\d\d)(\d{2})(\d{0,4}).*/,"$1-$2-$3");
+                }
+                else if (r.length > 2) {
+                    r = r.replace(/^(\d\d\d)(\d{0,3})/,"$1-$2");
+                }
+                else {
+                    r = r.replace(/^(\d*)/, "$1");
+                }
+                return r;
             }
         </script>
 
