@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Acme Widget Company Portal</title>
+    <link href="https://kendo.cdn.telerik.com/2021.1.224/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="https://kendo.cdn.telerik.com/2021.1.224/styles/kendo.default.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.1.224/js/kendo.all.min.js"></script>
+
+    <script src="DataSource.js"></script>
+</head>
+<body>
+
+    <div>
+        <h3>Welcome to the Acme Widget Employee Management System</h3>
+
+        <div id="grid"></div>
+
+        <script id="popupEditor" type="text/x-kendo-template">
+                <div class="k-edit-label">
+                    <label for="EmployeeId">Employee Id</label>
+                </div>
+                <div data-container-for="EmployeeId" class="k-edit-field">
+                    <input name="EmployeeId" data-bind="source: data, value: EmployeeId" data-text-field="EmployeeId" data-role="textbox" />
+                </div>
+
+            <div class="k-edit-label">
+                    <label for="FirstName">First Name</label>
+                </div>
+				<div data-container-for="LastName" class="k-edit-field">
+                    <input name="LastName" data-bind="source: data, value: LastName" data-text-field="LastName" data-role="textbox" />
+                </div>
+               
+            <div class="k-edit-label">
+                    <label for="LastName">Last Name</label>
+                </div>
+				<div data-container-for="FirstName" class="k-edit-field">
+                    <input name="FirstName" data-bind="source: data, value: FirstName" data-text-field="FirstName" data-role="textbox" />
+                </div>
+        </script>
+
+        <script id="employeeIdTemplate" type="text/x-kendo-template">
+            <ul class="GearOptionsMenu" style="display: none;">
+                <li style="width: 16px; height: 16px; top: 0px;">
+                    <img style="position: absolute; top: 2px; left: 4px; height: 16px; width: 16px;" src="Gear.png" />
+                    <ul>
+                            <li class="EditOption" data-commandname="EditOption">
+                                Edit
+                            </li>
+                            <li class="DeleteOption" data-commandname="DeleteOption">
+                                Delete
+                            </li>
+                    </ul>
+                </li>
+            </ul>
+            #: EmployeeId #
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                initializeGrid();
+            });
+
+            function initializeGrid() {
+                $("#grid").kendoGrid({
+                    toolbar: [
+                        { name: "create" }
+                    ],
+                    filterable: true,
+                    sortable: true,
+                    dataSource: { data: dataSource, schema: { model: { id: "EmployeeId" } } },
+                    columnMenu: {
+                        filterable: true,
+                        sortable: true
+                    },
+                    width: "1250px",
+                    columns: [
+                        {
+                            field: "EmployeeId",
+                            title: "Employee Id",
+                            template: kendo.template($("#employeeIdTemplate").html())
+                        }, {
+                            field: "FirstName",
+                            title: "First Name"
+                        }, {
+                            field: "LastName",
+                            title: "Last Name"
+                        }
+                    ],
+                    editable: { mode: "popup", template: kendo.template($("#popupEditor").html()) },
+                    dataBound: onGridDataBound
+                });
+            }
+
+            function onGridDataBound() {
+                $(".GearOptionsMenu").each(function () {
+                    $(".GearOptionsMenu").show();
+                    $(".GearOptionsMenu").kendoMenu({
+                        select: onGearOptionsMenuSelect
+                    });
+                });
+            }
+
+            function onGearOptionsMenuSelect(e) {
+                var row = this.element.closest("tr");
+                var grid = $("#grid");
+
+                if ($(e.item).data("commandname")) {
+                    var command = $(e.item).data("commandname");
+                    if (command.toUpperCase() === "EDITOPTION") {
+                        grid.data("kendoGrid").editRow($(row));
+                    } else if (command.toUpperCase() === "DELETEOPTION") {
+                        var dataItem = $(grid).data("kendoGrid").dataItem(row);
+                        $(row).addClass("k-state-hover");
+                        if (confirm('Are you sure you want to delete the highlighted employee?')) {
+                            var dataSource = $(grid).data("kendoGrid").dataSource;
+                            dataSource.remove(dataItem);
+                            dataSource.sync();
+                        } else {
+                            $(row).removeClass("k-state-hover");
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <style type="text/css">
+            #grid.k-grid tr td {
+                overflow: visible;
+            }
+
+            .GearOptionsMenu {
+                display: inline-block;
+                left: 0;
+                text-align: left;
+                top: 4px;
+                left: 0;
+                border: 0;
+                background-color: inherit;
+                background-image: none;
+            }
+
+                .GearOptionsMenu > .k-item > .k-link > .k-icon {
+                    width: 0;
+                    height: 0;
+                    border: 0;
+                    padding: 0;
+                }
+
+                .GearOptionsMenu > .k-item > .k-link {
+                    width: 0;
+                    height: 0;
+                    border: 0;
+                    padding: 0;
+                }
+
+                .GearOptionsMenu.k-widget {
+                    border: 0;
+                }
+
+                .GearOptionsMenu > li {
+                    border-width: 0;
+                }
+
+            #grid {
+                margin-top: 10px;
+            }
+        </style>
+    </div>
+</body>
+</html>
